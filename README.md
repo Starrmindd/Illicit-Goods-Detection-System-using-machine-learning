@@ -63,6 +63,4 @@ open http://localhost:3000
 - Data encryption at rest
 - Configurable retention policies
 
-## License
-
-[Your License Here]
+## ENJOY ;)
