@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X-ray Contraband Detection System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-shield-alt me-2"></i>
+                X-ray Detection System
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" onclick="showSection('dashboard')">
+                            <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showSection('detection')">
+                            <i class="fas fa-search me-1"></i>Detection
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showSection('training')">
+                            <i class="fas fa-brain me-1"></i>Training
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showSection('dataset')">
+                            <i class="fas fa-database me-1"></i>Dataset
+                        </a>
+                    </li>
+                </ul>
+                <div class="navbar-nav">
+                    <span class="navbar-text me-3">
+                        <i class="fas fa-circle text-success me-1"></i>System Online
+                    </span>
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-user-circle"></i> Admin
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid mt-4">
+        <!-- Dashboard Section -->
+        <div id="dashboard-section" class="content-section">
+            <div class="row">
+                <div class="col-12">
+                    <h2><i class="fas fa-tachometer-alt me-2"></i>System Dashboard</h2>
+                </div>
+            </div>
+            
+            <!-- Stats Cards -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 id="scans-today">1,247</h4>
+                                    <p class="mb-0">Scans Today</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-x-ray fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 id="threats-detected">23</h4>
+                                    <p class="mb-0">Threats Detected</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-exclamation-triangle fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 id="model-accuracy">94.2%</h4>
+                                    <p class="mb-0">Model Accuracy</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-bullseye fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 id="avg-latency">342ms</h4>
+                                    <p class="mb-0">Avg Latency</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-clock fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="row mb-4">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-chart-line me-2"></i>Detection Activity (Last 24 Hours)</h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="activityChart" height="100"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-chart-pie me-2"></i>Threat Categories</h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="threatChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Alerts -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-bell me-2"></i>Recent Alerts</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Time</th>
+                                            <th>Threat Type</th>
+                                            <th>Confidence</th>
+                                            <th>Location</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="alerts-table">
+                                        <!-- Populated by JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detection Section -->
+        <div id="detection-section" class="content-section" style="display: none;">
+            <div class="row">
+                <div class="col-12">
+                    <h2><i class="fas fa-search me-2"></i>X-ray Image Detection</h2>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-upload me-2"></i>Upload X-ray Image</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="upload-area" id="upload-area">
+                                <i class="fas fa-cloud-upload-alt fa-3x mb-3"></i>
+                                <p>Drag & drop X-ray image here or click to browse</p>
+                                <input type="file" id="file-input" accept="image/*" style="display: none;">
+                                <button class="btn btn-primary" onclick="document.getElementById('file-input').click()">
+                                    Browse Files
+                                </button>
+                            </div>
+                            <div class="mt-3">
+                                <button class="btn btn-success" id="analyze-btn" disabled onclick="analyzeImage()">
+                                    <i class="fas fa-search me-2"></i>Analyze Image
+                                </button>
+                                <button class="btn btn-secondary ms-2" onclick="clearImage()">
+                                    <i class="fas fa-trash me-2"></i>Clear
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-image me-2"></i>Image Preview</h5>
+                        </div>
+                        <div class="card-body text-center">
+                            <div id="image-preview" class="image-preview-container">
+                                <p class="text-muted">No image selected</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detection Results -->
+            <div class="row mt-4" id="detection-results" style="display: none;">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-exclamation-triangle me-2"></i>Detection Results</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="results-content">
+                                <!-- Populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Training Section -->
+        <div id="training-section" class="content-section" style="display: none;">
+            <div class="row">
+                <div class="col-12">
+                    <h2><i class="fas fa-brain me-2"></i>Model Training</h2>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-cogs me-2"></i>Training Configuration</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="training-form">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Model Architecture</label>
+                                            <select class="form-select" id="model-type">
+                                                <option value="faster_rcnn">Faster R-CNN</option>
+                                                <option value="yolov8">YOLOv8</option>
+                                                <option value="retinanet">RetinaNet</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Batch Size</label>
+                                            <select class="form-select" id="batch-size">
+                                                <option value="8">8</option>
+                                                <option value="16" selected>16</option>
+                                                <option value="32">32</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Learning Rate</label>
+                                            <input type="number" class="form-control" id="learning-rate" 
+                                                   value="0.001" step="0.0001" min="0.0001" max="0.1">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Epochs</label>
+                                            <input type="number" class="form-control" id="epochs" 
+                                                   value="100" min="1" max="1000">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Optimizer</label>
+                                            <select class="form-select" id="optimizer">
+                                                <option value="adam" selected>Adam</option>
+                                                <option value="adamw">AdamW</option>
+                                                <option value="sgd">SGD</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Augmentation Severity</label>
+                                            <select class="form-select" id="augmentation">
+                                                <option value="light">Light</option>
+                                                <option value="medium" selected>Medium</option>
+                                                <option value="heavy">Heavy</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <button type="button" class="btn btn-success" onclick="startTraining()">
+                                        <i class="fas fa-play me-2"></i>Start Training
+                                    </button>
+                                    <button type="button" class="btn btn-warning" onclick="pauseTraining()" disabled id="pause-btn">
+                                        <i class="fas fa-pause me-2"></i>Pause
+                                    </button>
+                                    <button type="button" class="btn btn-danger" onclick="stopTraining()" disabled id="stop-btn">
+                                        <i class="fas fa-stop me-2"></i>Stop
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-info-circle me-2"></i>Training Status</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <strong>Status:</strong> 
+                                <span id="training-status" class="badge bg-secondary">Idle</span>
+                            </div>
+                            <div class="mb-3">
+                                <strong>Current Epoch:</strong> 
+                                <span id="current-epoch">0</span> / <span id="total-epochs">0</span>
+                            </div>
+                            <div class="mb-3">
+                                <strong>Progress:</strong>
+                                <div class="progress mt-1">
+                                    <div class="progress-bar" id="training-progress" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <strong>Loss:</strong> <span id="current-loss">-</span>
+                            </div>
+                            <div class="mb-3">
+                                <strong>mAP:</strong> <span id="current-map">-</span>
+                            </div>
+                            <div class="mb-3">
+                                <strong>ETA:</strong> <span id="training-eta">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Training Charts -->
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-chart-line me-2"></i>Training Loss</h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="lossChart" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-chart-line me-2"></i>Validation mAP</h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="mapChart" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dataset Section -->
+        <div id="dataset-section" class="content-section" style="display: none;">
+            <div class="row">
+                <div class="col-12">
+                    <h2><i class="fas fa-database me-2"></i>Dataset Management</h2>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-upload me-2"></i>Dataset Upload</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label">Upload Type</label>
+                                <select class="form-select" id="upload-type">
+                                    <option value="single">Single Image</option>
+                                    <option value="batch">Batch Archive</option>
+                                    <option value="coco">COCO Dataset</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Select Files</label>
+                                <input type="file" class="form-control" id="dataset-files" multiple>
+                            </div>
+                            <button class="btn btn-primary" onclick="uploadDataset()">
+                                <i class="fas fa-upload me-2"></i>Upload Dataset
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-chart-bar me-2"></i>Dataset Statistics</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <canvas id="classDistChart"></canvas>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="dataset-stats">
+                                        <div class="stat-item">
+                                            <strong>Total Images:</strong> <span id="total-images">15,847</span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <strong>Training Set:</strong> <span id="train-images">12,678</span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <strong>Validation Set:</strong> <span id="val-images">2,112</span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <strong>Test Set:</strong> <span id="test-images">1,057</span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <strong>Total Annotations:</strong> <span id="total-annotations">23,456</span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <strong>Avg Objects/Image:</strong> <span id="avg-objects">1.48</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Augmentation Preview -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-magic me-2"></i>Data Augmentation Preview</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Augmentation Type</label>
+                                        <select class="form-select" id="aug-type">
+                                            <option value="light">Light</option>
+                                            <option value="medium">Medium</option>
+                                            <option value="heavy">Heavy</option>
+                                        </select>
+                                    </div>
+                                    <button class="btn btn-primary" onclick="previewAugmentation()">
+                                        <i class="fas fa-eye me-2"></i>Preview
+                                    </button>
+                                </div>
+                                <div class="col-md-9">
+                                    <div id="augmentation-preview" class="augmentation-grid">
+                                        <!-- Populated by JavaScript -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Modal -->
+    <div class="modal fade" id="loadingModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <div class="spinner-border text-primary mb-3" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <h5 id="loading-text">Processing...</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
