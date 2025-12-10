@@ -64,3 +64,6 @@ open http://localhost:3000
 - Configurable retention policies
 
 ## ENJOY ;)
+
+- Built an interface to simulate how it works if you want to view before installing (html, css, js and bootstrap)
+
